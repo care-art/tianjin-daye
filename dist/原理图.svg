@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 720" font-family="'Songti SC','SimSun',serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1c1a17"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#c0392b"/>
+    </marker>
+  </defs>
+
+  <rect width="1080" height="720" fill="#e9e6df"/>
+  <rect x="14" y="14" width="1052" height="692" fill="none" stroke="#1c1a17" stroke-width="2.5"/>
+  <text x="540" y="52" text-anchor="middle" font-size="26" font-weight="900" fill="#1c1a17" letter-spacing="6">《天津大爷 · 损嘴双模》系统原理图</text>
+  <text x="540" y="76" text-anchor="middle" font-size="12" fill="#6f6a60" letter-spacing="3">滑动变怼器 = 模式切换器 ｜ 智能体 AIGC 应用</text>
+
+  <!-- 用户 -->
+  <rect x="40" y="300" width="150" height="130" rx="10" fill="#fdfcf9" stroke="#1c1a17" stroke-width="2"/>
+  <text x="115" y="345" text-anchor="middle" font-size="30">🧍</text>
+  <text x="115" y="385" text-anchor="middle" font-size="15" font-weight="700" fill="#1c1a17">用户</text>
+  <text x="115" y="406" text-anchor="middle" font-size="11" fill="#6f6a60">拖滑杆 · 打字聊天</text>
+
+  <!-- 浏览器页面 -->
+  <rect x="270" y="120" width="330" height="490" rx="12" fill="#f4f1ea" stroke="#1c1a17" stroke-width="2.5"/>
+  <rect x="270" y="120" width="330" height="34" rx="12" fill="#1c1a17"/>
+  <text x="435" y="143" text-anchor="middle" font-size="14" fill="#e9e6df" letter-spacing="2">浏览器 · index.html（纯前端）</text>
+
+  <!-- 页面内模块 -->
+  <rect x="292" y="176" width="286" height="88" rx="8" fill="#fdfcf9" stroke="#b9b3a6"/>
+  <text x="435" y="202" text-anchor="middle" font-size="14" font-weight="700" fill="#c0392b">上 · 输入端（电压 U）</text>
+  <text x="435" y="224" text-anchor="middle" font-size="11" fill="#6f6a60">用户说的话 + AI 形象 6 帧换形</text>
+  <text x="435" y="243" text-anchor="middle" font-size="11" fill="#6f6a60">（AI 盲盒图优先，手绘 SVG 兜底）</text>
+
+  <rect x="292" y="284" width="286" height="128" rx="8" fill="#fdfcf9" stroke="#b9b3a6"/>
+  <text x="435" y="310" text-anchor="middle" font-size="14" font-weight="700" fill="#c0392b">中 · 滑动变阻器（0–100）</text>
+  <line x1="316" y1="352" x2="554" y2="352" stroke="#c0392b" stroke-width="4" stroke-linecap="round"/>
+  <line x1="316" y1="352" x2="435" y2="352" stroke="#e9e6df" stroke-width="2"/>
+  <circle cx="435" cy="352" r="9" fill="#c0392b" stroke="#fdfcf9" stroke-width="3"/>
+  <text x="330" y="380" text-anchor="middle" font-size="10.5" fill="#6f6a60">温和·捧</text>
+  <text x="435" y="380" text-anchor="middle" font-size="10.5" fill="#6f6a60">正常</text>
+  <text x="540" y="380" text-anchor="middle" font-size="10.5" fill="#6f6a60">损到底·怼</text>
+  <text x="435" y="401" text-anchor="middle" font-size="10.5" fill="#6f6a60">跨档：横幅提示 + 音效 + 白闪 + 抖动</text>
+
+  <rect x="292" y="432" width="286" height="120" rx="8" fill="#fdfcf9" stroke="#b9b3a6"/>
+  <text x="435" y="458" text-anchor="middle" font-size="14" font-weight="700" fill="#c0392b">下 · 输出端（电流 I）</text>
+  <text x="435" y="480" text-anchor="middle" font-size="11" fill="#6f6a60">大爷回复气泡（流式逐字）</text>
+  <text x="435" y="500" text-anchor="middle" font-size="11" fill="#6f6a60">每条气泡标注当时档位 · 损度</text>
+  <text x="435" y="520" text-anchor="middle" font-size="11" fill="#6f6a60">接口失败 → 自动回退演示文案</text>
+
+  <!-- 档位注入 -->
+  <rect x="660" y="150" width="200" height="120" rx="10" fill="#fff8ea" stroke="#c0392b" stroke-width="2"/>
+  <text x="760" y="180" text-anchor="middle" font-size="14" font-weight="700" fill="#1c1a17">提示词组装器</text>
+  <text x="760" y="204" text-anchor="middle" font-size="11" fill="#3a362f">System = 人设卡（可编辑，存本机）</text>
+  <text x="760" y="224" text-anchor="middle" font-size="11" fill="#3a362f">User = 用户消息 + 档位/损度注入</text>
+  <text x="760" y="244" text-anchor="middle" font-size="11" fill="#3a362f">附最近 8 条对话上下文</text>
+  <line x1="600" y1="348" x2="660" y2="230" stroke="#1c1a17" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="618" y="270" font-size="10.5" fill="#6f6a60">档位</text>
+
+  <!-- 两个 AI 后端 -->
+  <rect x="660" y="330" width="200" height="96" rx="10" fill="#eaf1e6" stroke="#4a7a3a" stroke-width="2"/>
+  <text x="760" y="358" text-anchor="middle" font-size="13" font-weight="700" fill="#2f5a24">Agnes AI（已接通）</text>
+  <text x="760" y="380" text-anchor="middle" font-size="11" fill="#3a362f">agnes-3.0-flash · 免费 · 流式</text>
+  <text x="760" y="400" text-anchor="middle" font-size="10.5" fill="#6f6a60">api.agnes-ai.cn/v1/chat/completions</text>
+  <rect x="660" y="446" width="200" height="82" rx="10" fill="#eef0f6" stroke="#3f5a8f" stroke-width="2"/>
+  <text x="760" y="472" text-anchor="middle" font-size="13" font-weight="700" fill="#26406b">扣子 Coze 智能体（预留）</text>
+  <text x="760" y="492" text-anchor="middle" font-size="11" fill="#3a362f">/v3/chat · bot_id + PAT</text>
+  <text x="760" y="510" text-anchor="middle" font-size="10.5" fill="#6f6a60">比赛指定平台，一键切换</text>
+  <line x1="860" y1="215" x2="760" y2="330" stroke="#1c1a17" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="760" y1="330" x2="760" y2="446" stroke="#3f5a8f" stroke-width="1.6" stroke-dasharray="5 4"/>
+
+  <!-- 回流 -->
+  <path d="M660 380 Q600 380 578 470" fill="none" stroke="#c0392b" stroke-width="2.2" marker-end="url(#arrR)"/>
+  <text x="596" y="420" font-size="10.5" fill="#c0392b">SSE 流式回复</text>
+
+  <!-- Key 安全 -->
+  <rect x="905" y="150" width="150" height="200" rx="10" fill="#fdfcf9" stroke="#1c1a17" stroke-width="1.8" stroke-dasharray="6 4"/>
+  <text x="980" y="178" text-anchor="middle" font-size="13" font-weight="700" fill="#1c1a17">Key 安全</text>
+  <text x="980" y="202" text-anchor="middle" font-size="10.5" fill="#3a362f">本机演示：</text>
+  <text x="980" y="220" text-anchor="middle" font-size="10.5" fill="#3a362f">Key 存访客浏览器</text>
+  <text x="980" y="244" text-anchor="middle" font-size="10.5" fill="#3a362f">公开部署：</text>
+  <text x="980" y="262" text-anchor="middle" font-size="10.5" fill="#3a362f">Cloudflare Worker 代理</text>
+  <text x="980" y="280" text-anchor="middle" font-size="10.5" fill="#3a362f">Key 藏服务端环境变量</text>
+  <text x="980" y="298" text-anchor="middle" font-size="10.5" fill="#3a362f">（见 deploy/worker.js）</text>
+  <line x1="905" y1="250" x2="860" y2="250" stroke="#1c1a17" stroke-width="1.6" stroke-dasharray="4 3"/>
+
+  <!-- 底部原理注释 -->
+  <rect x="40" y="560" width="1000" height="120" rx="10" fill="#f4f1ea" stroke="#1c1a17" stroke-width="1.8"/>
+  <text x="540" y="590" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1c1a17">核心交互闭环（一物两用：变阻器既是切换器又是仪表）</text>
+  <text x="540" y="618" text-anchor="middle" font-size="12" fill="#3a362f">拖动滑片（0–100） → 判定档位（0–33 温和 / 34–66 正常 / 67–100 损到底） → 形象换帧 + 特效反馈</text>
+  <text x="540" y="642" text-anchor="middle" font-size="12" fill="#3a362f">→ 档位实时注入提示词 → AI 按档位以天津话回话（捧哏 / 半捧半损 / 怼逻辑+暖心兜底）</text>
+  <text x="540" y="666" text-anchor="middle" font-size="11.5" fill="#c0392b">损而不恶：怼事不怼人 · 不带脏字 · 怼完必留暖心兜底</text>
+</svg>

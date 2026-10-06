@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>滑动变怼器 · 天津大爷损嘴校准器</title>
+<meta property="og:title" content="滑动变怼器 · 天津大爷损嘴双模智能体">
+<meta property="og:description" content="拖动滑动变阻器，让 AI 天津大爷从捧哏切到怼人——损而不恶，嘴毒心善。第四届网络文化节 · 智能体 AIGC 应用。">
+<meta property="og:type" content="website">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--paper:#e9e6df;--paper2:#f4f1ea;--ink:#1c1a17;--dim:#6f6a60;--faint:#98938a;--red:#c0392b;--line:#b9b3a6}
+html,body{background:var(--paper);color:var(--ink);font-family:"Songti SC","STSong","SimSun","Noto Serif SC",serif}
+main{max-width:880px;margin:0 auto;padding:28px 18px 64px}
+
+/* 报头 */
+.mast{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:2.5px solid var(--ink);padding-bottom:16px}
+.mast .en{font-size:11px;letter-spacing:.34em;color:var(--dim);font-family:ui-monospace,Consolas,monospace;margin-bottom:8px}
+.mast h1{font-size:46px;letter-spacing:.14em;font-weight:900;line-height:1.1}
+.mast-right{text-align:right;flex:none}
+.mast-right .lab{font-size:12px;letter-spacing:.3em;color:var(--dim)}
+.mast-right .big{font-family:ui-monospace,Consolas,monospace;font-size:30px;font-weight:700;margin-top:2px}
+.mast-right .big small{font-size:16px;color:var(--dim);font-weight:400}
+
+/* 校准取景台 */
+.stage{position:relative;margin:34px 0 10px}
+.watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:clamp(200px,46vw,340px);font-weight:900;color:rgba(28,26,23,.055);user-select:none;pointer-events:none;line-height:1;z-index:0}
+.frame{position:relative;height:min(56vw,400px);z-index:1;
+ background:
+  linear-gradient(var(--ink),var(--ink)) left 0 top 0/30px 3px,
+  linear-gradient(var(--ink),var(--ink)) left 0 top 0/3px 30px,
+  linear-gradient(var(--ink),var(--ink)) right 0 top 0/30px 3px,
+  linear-gradient(var(--ink),var(--ink)) right 0 top 0/3px 30px,
+  linear-gradient(var(--ink),var(--ink)) left 0 bottom 0/30px 3px,
+  linear-gradient(var(--ink),var(--ink)) left 0 bottom 0/3px 30px,
+  linear-gradient(var(--ink),var(--ink)) right 0 bottom 0/30px 3px,
+  linear-gradient(var(--ink),var(--ink)) right 0 bottom 0/3px 30px;
+ background-repeat:no-repeat}
+.forms{position:absolute;inset:0;z-index:1}
+.form{position:absolute;inset:6% 4% 0;width:92%;height:100%;opacity:0;transform:scale(.94) translateY(8px);transition:opacity .32s ease,transform .32s ease}
+.form.on{opacity:1;transform:none}
+img.form{object-fit:contain;object-position:center bottom;
+ -webkit-mask-image:radial-gradient(ellipse 72% 78% at 50% 58%,#000 62%,transparent 96%);
+ mask-image:radial-gradient(ellipse 72% 78% at 50% 58%,#000 62%,transparent 96%)}
+.forms.rage{animation:rageShake .4s linear infinite}
+@keyframes rageShake{0%,100%{transform:translate(0,0)}25%{transform:translate(2px,-2px) rotate(.3deg)}75%{transform:translate(-2px,2px) rotate(-.3deg)}}
+.frame.punch{animation:punchA .45s ease-out}
+@keyframes punchA{0%{transform:scale(1.09)}100%{transform:scale(1)}}
+#heat{position:absolute;inset:0;pointer-events:none;z-index:2;background:radial-gradient(60% 55% at 50% 42%,rgba(255,58,24,.5),rgba(255,58,24,0) 70%);opacity:0;transition:opacity .2s}
+#aura{position:absolute;inset:0;pointer-events:none;z-index:2;opacity:0;transition:opacity .4s;background:radial-gradient(46% 40% at 50% 32%,rgba(255,200,60,.5),rgba(255,200,60,0) 72%)}
+#aura.on{opacity:1;animation:auraP 1.3s ease-in-out infinite}
+@keyframes auraP{50%{opacity:.5}}
+#flash{position:absolute;inset:0;pointer-events:none;z-index:3;background:#fff;opacity:0}
+#flash.on{animation:flashA .38s ease-out}
+@keyframes flashA{0%{opacity:.85}100%{opacity:0}}
+#banner{position:absolute;top:14px;left:50%;transform:translate(-50%,-8px);z-index:4;background:#fdfcf9;border:1.5px solid var(--ink);box-shadow:3px 3px 0 rgba(28,26,23,.16);color:var(--ink);font-size:13px;letter-spacing:.06em;padding:6px 15px;border-radius:999px;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap}
+#banner.show{opacity:1;transform:translate(-50%,0)}
+#banner.hot{color:var(--red);border-color:var(--red)}
+.state-row{position:relative;z-index:1;display:flex;align-items:baseline;justify-content:center;gap:22px;margin-top:14px}
+.state-row .side{font-size:12px;letter-spacing:.28em;color:var(--dim)}
+#stageName{font-size:36px;font-weight:900;letter-spacing:.1em}
+#stageName.pop{animation:pop .4s ease-out}
+@keyframes pop{0%{transform:scale(1.35);opacity:.2}100%{transform:scale(1);opacity:1}}
+#stageIdx{font-family:ui-monospace,Consolas,monospace}
+
+/* 刻度滑杆 */
+.cali{max-width:720px;margin:26px auto 0}
+#dial{appearance:none;-webkit-appearance:none;width:100%;height:30px;cursor:pointer;--p:41%;
+ background:
+  repeating-linear-gradient(90deg,transparent 0 calc(1% - 1px),rgba(28,26,23,.38) calc(1% - 1px) 1px) 0 6px/100% 8px no-repeat,
+  repeating-linear-gradient(90deg,transparent 0 calc(5% - 1px),rgba(28,26,23,.7) calc(5% - 1px) 2px) 0 2px/100% 16px no-repeat,
+  linear-gradient(90deg,var(--red) var(--p),rgba(28,26,23,.18) var(--p)) 0 13px/100% 3px no-repeat}
+#dial::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--red);border:3.5px solid #fdfcf9;box-shadow:0 1px 5px rgba(0,0,0,.35)}
+#dial::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--red);border:3.5px solid #fdfcf9;box-shadow:0 1px 5px rgba(0,0,0,.35)}
+#dial:focus-visible{outline:2px dashed var(--red);outline-offset:6px}
+.stage-labels{position:relative;height:22px;margin-top:10px;font-size:13.5px;letter-spacing:.1em}
+.stage-labels span{position:absolute;transform:translateX(-50%);color:var(--faint);white-space:nowrap}
+.stage-labels span.on{color:var(--red);font-weight:900}
+
+/* 对话卡片 */
+.chat-card{margin-top:44px;background:var(--paper2);border:1.5px solid var(--ink);box-shadow:4px 4px 0 rgba(28,26,23,.14)}
+.chat-head{display:flex;align-items:center;gap:9px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13.5px;letter-spacing:.14em;color:var(--dim);flex-wrap:wrap}
+.chat-head .dot{width:9px;height:9px;border-radius:50%;background:var(--red)}
+.chip{margin-left:auto;font-size:11.5px;color:var(--red);border:1px solid var(--red);padding:2px 10px;letter-spacing:.08em}
+#chat{height:220px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}
+.b{max-width:84%;padding:9px 13px;font-size:14.5px;line-height:1.8}
+.b .who{display:block;font-size:11px;color:var(--faint);letter-spacing:.14em;margin-bottom:3px}
+.b.me{align-self:flex-end;background:#efe6d2;border:1px solid var(--line);border-top-right-radius:0}
+.b.daye{align-self:flex-start;background:#fdfcf9;border:1px solid var(--ink);border-top-left-radius:0}
+.b.daye .who{color:var(--red)}
+.dots i{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--red);margin-right:4px;animation:dt 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes dt{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+.in-row{display:flex;gap:10px;padding:12px 14px;border-top:1px solid var(--line)}
+#say{flex:1;background:#fdfcf9;border:1px solid var(--line);padding:10px 12px;font-size:14.5px;font-family:inherit;resize:vertical;min-height:46px;outline:none}
+#say:focus{border-color:var(--red)}
+#send{flex:none;background:var(--ink);color:var(--paper2);border:none;padding:10px 22px;font-size:14.5px;letter-spacing:.2em;font-family:inherit;cursor:pointer}
+#send:active{transform:translateY(1px)}
+#send:disabled{opacity:.5;cursor:default}
+
+/* 页脚 / 设置 / 弹窗 / 提示 */
+footer{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+footer>button{background:none;color:var(--dim);border:1px solid var(--line);padding:6px 14px;font-size:12.5px;font-family:inherit;letter-spacing:.1em;cursor:pointer}
+footer>button:hover{color:var(--red);border-color:var(--red)}
+.chip2{font-size:12px;color:var(--red);border:1px solid var(--red);padding:6px 12px;letter-spacing:.08em}
+.cfg{flex-basis:100%;background:var(--paper2);border:1px solid var(--line);padding:10px 14px;font-size:13px;color:var(--dim)}
+.cfg summary{cursor:pointer;letter-spacing:.1em}
+.cfg .grid{display:grid;grid-template-columns:96px 1fr;gap:8px 10px;margin-top:10px;align-items:center}
+.cfg input,.cfg select{background:#fdfcf9;border:1px solid var(--line);padding:8px 10px;font-size:13px;width:100%;font-family:ui-monospace,Consolas,monospace}
+.cfg select{font-family:inherit}
+.cfg .row{grid-column:1/-1;display:flex;gap:10px;margin-top:4px;flex-wrap:wrap}
+.cfg .row button{background:none;border:1px solid var(--line);color:var(--dim);padding:6px 16px;font-family:inherit;cursor:pointer;font-size:12.5px}
+.cfg .row button:hover{color:var(--red);border-color:var(--red)}
+.tiny{flex-basis:100%;color:var(--faint);font-size:11.5px;line-height:1.9}
+dialog{background:var(--paper2);color:var(--ink);border:1.5px solid var(--ink);box-shadow:6px 6px 0 rgba(28,26,23,.2);max-width:640px;width:calc(100vw - 40px);padding:0}
+dialog::backdrop{background:rgba(28,26,23,.55)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line);letter-spacing:.14em;font-weight:700}
+.dlg-head button,dialog .foot button{background:none;border:1px solid var(--line);color:var(--dim);padding:5px 13px;cursor:pointer;font-family:inherit;font-size:12.5px}
+.dlg-body{display:block;width:100%;padding:16px 18px;height:52vh;overflow:auto;font-size:13px;line-height:1.95;white-space:pre-wrap;font-family:ui-monospace,Consolas,"Songti SC",monospace;color:#3a362f;background:#fdfcf9;border:none;outline:none;resize:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+dialog .foot{padding:12px 18px 16px;display:flex;justify-content:flex-end}
+#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,14px);background:var(--ink);color:var(--paper2);padding:9px 18px;font-size:13px;letter-spacing:.08em;opacity:0;transition:.25s;pointer-events:none;z-index:99}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:560px){
+ .mast h1{font-size:32px}
+ .mast-right .big{font-size:22px}
+ #stageName{font-size:27px}
+ .state-row{gap:12px}
+ .state-row .side{font-size:10.5px;letter-spacing:.14em}
+ .stage-labels{font-size:10px;letter-spacing:0}
+}
+</style>
+</head>
+<body>
+<main>
+ <header class="mast">
+  <div>
+   <p class="en">TIANJIN DAYE ROAST CALIBRATOR</p>
+   <h1>滑动变怼器</h1>
+  </div>
+  <div class="mast-right">
+   <p class="lab">损 度</p>
+   <p class="big"><span id="vNum">41</span> <small>/ 100</small></p>
+  </div>
+ </header>
+
+ <section class="stage">
+  <div class="watermark" id="watermark">常</div>
+  <figure class="frame" id="frame">
+   <div class="forms" id="forms">
+    <!-- 公共角色底版 -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+     <g id="daye-base">
+      <path d="M92 360 Q96 306 132 286 L208 286 Q244 306 248 360 Z" fill="#F5F2EA" stroke="#3A2313" stroke-width="5"/>
+      <path d="M136 292 Q170 312 204 292" fill="none" stroke="#3A2313" stroke-width="4"/>
+      <path d="M150 252 h40 v40 q-20 12 -40 0 Z" fill="#F0BE96" stroke="#3A2313" stroke-width="4"/>
+      <ellipse cx="80" cy="170" rx="17" ry="24" fill="#F6C9A3" stroke="#3A2313" stroke-width="4"/>
+      <ellipse cx="260" cy="170" rx="17" ry="24" fill="#F6C9A3" stroke="#3A2313" stroke-width="4"/>
+      <ellipse cx="170" cy="158" rx="92" ry="98" fill="#F6C9A3" stroke="#3A2313" stroke-width="5"/>
+      <path d="M112 96 Q136 64 178 60" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" fill="none" opacity=".35"/>
+      <path d="M86 150 q-12 14 -6 30 M96 144 q-14 18 -8 40 M254 150 q12 14 6 30 M244 144 q14 18 8 40" stroke="#E8E8E8" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <path d="M158 188 Q170 202 182 188" stroke="#3A2313" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M132 216 Q150 202 163 210 L163 222 Q149 219 136 228 Z" fill="#E0E0E0" stroke="#3A2313" stroke-width="4"/>
+      <path d="M208 216 Q190 202 177 210 L177 222 Q191 219 204 228 Z" fill="#E0E0E0" stroke="#3A2313" stroke-width="4"/>
+      <ellipse cx="112" cy="198" rx="17" ry="11" fill="#F2A58C" opacity=".6"/>
+      <ellipse cx="228" cy="198" rx="17" ry="11" fill="#F2A58C" opacity=".6"/>
+     </g>
+    </defs></svg>
+
+    <!-- 帧1 捧哏圣手 -->
+    <svg class="form" data-i="1" viewBox="0 0 340 360" role="img" aria-label="捧哏圣手形态">
+     <g transform="rotate(-4 170 180)">
+      <use href="#daye-base"/>
+      <g stroke-linecap="round">
+       <path d="M112 108 Q142 90 168 104" stroke="#3A2313" stroke-width="17" fill="none"/><path d="M112 108 Q142 90 168 104" stroke="#EFEFEF" stroke-width="10" fill="none"/>
+       <path d="M172 104 Q198 90 228 108" stroke="#3A2313" stroke-width="17" fill="none"/><path d="M172 104 Q198 90 228 108" stroke="#EFEFEF" stroke-width="10" fill="none"/>
+      </g>
+      <path d="M118 142 Q138 122 158 142 M182 142 Q202 122 222 142" stroke="#3A2313" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <path d="M126 236 Q170 288 214 236 Z" fill="#7C352A" stroke="#3A2313" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M142 238 h56 v9 q-28 8 -56 0 Z" fill="#fff"/>
+      <ellipse cx="170" cy="266" rx="19" ry="8" fill="#D96A58"/>
+      <path d="M52 62 l5 13 13 5 -13 5 -5 13 -5 -13 -13 -5 13 -5 Z M288 54 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4 Z" fill="#F5B301"/>
+     </g>
+    </svg>
+
+    <!-- 帧2 嘴贫大爷 -->
+    <svg class="form" data-i="2" viewBox="0 0 340 360" role="img" aria-label="嘴贫大爷形态">
+     <use href="#daye-base"/>
+     <g stroke-linecap="round">
+      <path d="M114 104 L168 100" stroke="#3A2313" stroke-width="17" fill="none"/><path d="M114 104 L168 100" stroke="#EFEFEF" stroke-width="10" fill="none"/>
+      <path d="M174 98 L226 84" stroke="#3A2313" stroke-width="17" fill="none"/><path d="M174 98 L226 84" stroke="#EFEFEF" stroke-width="10" fill="none"/>
+     </g>
+     <circle cx="140" cy="140" r="8" fill="#3A2313"/><circle cx="202" cy="140" r="8" fill="#3A2313"/>
+     <path d="M126 129 h28 M188 129 h28" stroke="#3A2313" stroke-width="5" stroke-linecap="round"/>
+     <path d="M126 232 Q170 276 214 232 Z" fill="#7C352A" stroke="#3A2313" stroke-width="5" stroke-linejoin="round"/>
+     <path d="M146 234 h48 v10 q-24 8 -48 0 Z" fill="#fff"/>
+     <path d="M222 214 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4 Z" fill="#F5B301"/>
+     <circle cx="252" cy="86" r="5" fill="none" stroke="#3A2313" stroke-width="4"/>
+     <circle cx="270" cy="70" r="7" fill="none" stroke="#3A2313" stroke-width="4"/>
+     <circle cx="291" cy="50" r="10" fill="none" stroke="#3A2313" stroke-width="4"/>
+    </svg>
+
+    <!-- 帧3 正常大爷 -->
+    <svg class="form" data-i="3" viewBox="0 0 340 360" role="img" aria-label="正常大爷形态">
+     <use href="#daye-base"/>
+     <g stroke-linecap="round">
+      <path d="M116 102 L166 98" stroke="#3A2313" stroke-width="17" fill="none"/><path d="M116 102 L166 98" stroke="#EFEFEF" stroke-width="10" fill="none"/>
+      <path d="M174 98 L224 102" stroke="#3A2313" stroke-width="17" fill="none"/><path d="M174 98 L224 102" stroke="#EFEFEF" stroke-width="10" fill="none"/>
+     </g>
+     <circle cx="140" cy="142" r="7" fill="#3A2313"/><circle cx="202" cy="142" r="7" fill="#3A2313"/>
+     <path d="M127 134 Q140 129 153 134 M187 134 Q202 129 215 134" stroke="#3A2313" stroke-width="5" fill="none" stroke-linecap="round"/>
+     <path d="M140 240 Q170 254 200 240" stroke="#3A2313" stroke-width="6" fill="none" stroke-linecap="round"/>
+    </svg>
+
+    <!-- 帧4 损嘴熟手 -->
+    <svg class="form" data-i="4" viewBox="0 0 340 360" role="img" aria-label="损嘴熟手形态">
+     <g transform="rotate(2 170 180)">
+      <use href="#daye-base"/>
+      <g stroke-linecap="round">
+       <path d="M116 100 L164 94" stroke="#3A2313" stroke-width="17" fill="none"/><path d="M116 100 L164 94" stroke="#EFEFEF" stroke-width="10" fill="none"/>
+       <path d="M176 96 L224 84" stroke="#3A2313" stroke-width="17" fill="none"/><path d="M176 96 L224 84" stroke="#EFEFEF" stroke-width="10" fill="none"/>
+      </g>
+      <path d="M122 132 Q139 141 156 132 M184 132 Q201 141 218 132" stroke="#3A2313" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M140 246 Q170 258 202 232" stroke="#3A2313" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <circle cx="202" cy="232" r="5" fill="#3A2313"/>
+      <path d="M238 98 q10 -12 20 0 q10 12 20 0 M238 118 q10 -12 20 0 q10 12 20 0" stroke="#3A2313" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+     </g>
+    </svg>
+
+    <!-- 帧5 怼人大爷 -->
+    <svg class="form" data-i="5" viewBox="0 0 340 360" role="img" aria-label="怼人大爷形态">
+     <use href="#daye-base"/>
+     <ellipse cx="170" cy="172" rx="84" ry="88" fill="#E5533A" opacity=".14"/>
+     <g stroke-linecap="round">
+      <path d="M114 88 L164 114" stroke="#3A2313" stroke-width="17" fill="none"/><path d="M114 88 L164 114" stroke="#EFEFEF" stroke-width="10" fill="none"/>
+      <path d="M176 114 L226 88" stroke="#3A2313" stroke-width="17" fill="none"/><path d="M176 114 L226 88" stroke="#EFEFEF" stroke-width="10" fill="none"/>
+     </g>
+     <circle cx="140" cy="144" r="15" fill="#fff" stroke="#3A2313" stroke-width="4"/>
+     <circle cx="202" cy="144" r="15" fill="#fff" stroke="#3A2313" stroke-width="4"/>
+     <circle cx="142" cy="146" r="6" fill="#3A2313"/><circle cx="200" cy="146" r="6" fill="#3A2313"/>
+     <path d="M127 134 l-9 -7 M130 152 l-10 5 M213 134 l9 -7 M210 152 l10 5" stroke="#D1452E" stroke-width="3" stroke-linecap="round"/>
+     <ellipse cx="170" cy="236" rx="25" ry="19" fill="#6F2A22" stroke="#3A2313" stroke-width="5"/>
+     <ellipse cx="170" cy="243" rx="13" ry="6" fill="#D96A58"/>
+     <path d="M88 116 l15 -9 M91 128 l16 3 M252 116 l-15 -9 M249 128 l-16 3" stroke="#D1452E" stroke-width="4" stroke-linecap="round"/>
+     <path d="M148 38 Q143 62 156 71 Q169 63 163 46 Z" fill="#FF8A2A"/>
+     <path d="M155 51 Q153 62 159 67 Q165 62 161 51 Z" fill="#FFD23A"/>
+     <path d="M196 46 Q192 66 202 73 Q212 67 207 53 Z" fill="#FF8A2A" opacity=".95"/>
+    </svg>
+
+    <!-- 帧6 损嘴祖师 -->
+    <svg class="form" data-i="6" viewBox="0 0 340 360" role="img" aria-label="损嘴祖师形态">
+     <g stroke="#F5B301" stroke-width="6" stroke-linecap="round">
+      <path d="M170 22 L170 -4 M88 40 L70 16 M252 40 L270 16 M50 104 L22 92 M290 104 L318 92 M40 170 L12 170 M300 170 L328 170"/>
+     </g>
+     <ellipse cx="170" cy="46" rx="92" ry="17" fill="none" stroke="#F5B301" stroke-width="9"/>
+     <ellipse cx="170" cy="46" rx="78" ry="12" fill="none" stroke="#FFD96A" stroke-width="4"/>
+     <use href="#daye-base"/>
+     <ellipse cx="170" cy="174" rx="84" ry="88" fill="#E5533A" opacity=".2"/>
+     <g stroke-linecap="round">
+      <path d="M112 84 L164 112" stroke="#3A2313" stroke-width="17" fill="none"/><path d="M112 84 L164 112" stroke="#EFEFEF" stroke-width="10" fill="none"/>
+      <path d="M176 112 L228 84" stroke="#3A2313" stroke-width="17" fill="none"/><path d="M176 112 L228 84" stroke="#EFEFEF" stroke-width="10" fill="none"/>
+     </g>
+     <circle cx="140" cy="144" r="16" fill="#FFEDE8" stroke="#3A2313" stroke-width="4"/>
+     <circle cx="202" cy="144" r="16" fill="#FFEDE8" stroke="#3A2313" stroke-width="4"/>
+     <circle cx="141" cy="146" r="6.5" fill="#D1452E"/><circle cx="201" cy="146" r="6.5" fill="#D1452E"/>
+     <path d="M126 132 l-10 -8 M129 152 l-11 6 M214 132 l10 -8 M211 152 l11 6" stroke="#D1452E" stroke-width="3" stroke-linecap="round"/>
+     <ellipse cx="170" cy="236" rx="28" ry="20" fill="#5E241C" stroke="#3A2313" stroke-width="5"/>
+     <ellipse cx="170" cy="244" rx="15" ry="7" fill="#D96A58"/>
+     <path d="M122 226 l-15 -9 M124 238 l-17 0 M218 226 l15 -9 M216 238 l17 0" stroke="#3A2313" stroke-width="4" stroke-linecap="round"/>
+     <path d="M170 -2 Q142 36 156 58 Q168 68 182 56 Q198 38 188 8 Z" fill="#FF7A1A"/>
+     <path d="M170 20 Q156 42 164 56 Q170 62 177 54 Q184 42 178 26 Z" fill="#FFB03A"/>
+     <path d="M170 36 Q166 48 170 56 Q174 60 177 52 Q180 44 176 38 Z" fill="#FFE066"/>
+     <path d="M92 336 Q170 322 248 336" stroke="#F5B301" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </svg>
+
+    <!-- AI 形象槽位：把 daye-1..6.png 放进 img/ 目录即自动启用 -->
+    <img class="form ai" data-i="1" src="img/daye-1.png" alt="AI 形象·捧哏圣手" onerror="this.remove()">
+    <img class="form ai" data-i="2" src="img/daye-2.png" alt="AI 形象·嘴贫大爷" onerror="this.remove()">
+    <img class="form ai" data-i="3" src="img/daye-3.png" alt="AI 形象·正常大爷" onerror="this.remove()">
+    <img class="form ai" data-i="4" src="img/daye-4.png" alt="AI 形象·损嘴熟手" onerror="this.remove()">
+    <img class="form ai" data-i="5" src="img/daye-5.png" alt="AI 形象·怼人大爷" onerror="this.remove()">
+    <img class="form ai" data-i="6" src="img/daye-6.png" alt="AI 形象·损嘴祖师" onerror="this.remove()">
+   </div>
+   <div id="heat"></div>
+   <div id="aura"></div>
+   <div id="flash"></div>
+   <div id="banner"></div>
+  </figure>
+  <div class="state-row">
+   <span class="side">当 前 状 态</span>
+   <strong id="stageName">正常大爷</strong>
+   <span class="side">阶段 <span id="stageIdx">03</span> / 06</span>
+  </div>
+ </section>
+
+ <section class="cali">
+  <input type="range" id="dial" min="0" max="100" step="1" value="41" aria-label="损度滑杆：左端捧哏圣手，右端损嘴祖师">
+  <div class="stage-labels" id="stageLabels"></div>
+ </section>
+
+ <section class="chat-card">
+  <div class="chat-head"><span class="dot"></span>输出端 · 跟大爷对两句<span id="modeChip" class="chip">回复源：内置演示文案（mock）</span></div>
+  <div id="chat"></div>
+  <div class="in-row">
+   <textarea id="say" rows="1" placeholder="跟大爷说点嘛……好好说话有糖吃，胡搅蛮缠有雷吃"></textarea>
+   <button id="send">说给大爷听</button>
+  </div>
+ </section>
+
+ <footer>
+  <button id="sndBtn">🔊 音效：开</button>
+  <button id="promptBtn">📜 人设 Prompt</button>
+  <span id="modeChip2" class="chip2" hidden></span>
+  <details class="cfg">
+   <summary>⚙ 回复源设置（接真实 AI）｜🎨 换 AI 形象图</summary>
+   <div class="grid">
+    <span>回复源</span>
+    <select id="f-src">
+     <option value="mock">内置演示文案（mock，无需配置）</option>
+     <option value="agnes">Agnes AI 真实对话</option>
+     <option value="coze">扣子 Coze 智能体</option>
+    </select>
+    <span>Agnes Key</span><input id="f-agnes" type="password" placeholder="agnes-ai.cn 的 API Key（仅存本机 localStorage）">
+    <span>Agnes 模型</span><input id="f-agnes-model" placeholder="agnes-3.0-flash（默认，免费）">
+    <span>Agnes 地址</span><input id="f-agnes-base" placeholder="默认走本项目代理（访客免填 Key）；也可填 https://api.agnes-ai.cn 直连+自己的 Key">
+    <span>Coze 令牌</span><input id="f-token" type="password" placeholder="Coze PAT，仅存本机">
+    <span>Coze 智能体ID</span><input id="f-bot" placeholder="bot_id，在扣子智能体发布页面可查">
+    <div class="row">
+     <button id="saveCfg">保存设置</button>
+     <button id="mockBtn">退回演示文案模式</button>
+    </div>
+   </div>
+   <p style="margin-top:10px;line-height:1.8">🎨 形象图升级：把 6 张 AI 生成的大爷图按损度从小到大命名 <b>daye-1.png ~ daye-6.png</b> 放进本页同目录的 <b>img/</b> 文件夹并刷新即可自动替换手绘形象（缺失哪张就继续用哪档手绘帧）。</p>
+  </details>
+  <p class="tiny">第四届网络文化节 · 数智新技艺赛道 · 智能体 AIGC 应用（演示页）｜默认使用内置三档演示文案；接入 Coze 后由真实智能体回复，令牌只存本机浏览器，不写进代码、不上传；接口不通时自动回退演示文案。</p>
+ </footer>
+</main>
+
+<dialog id="promptDlg">
+ <div class="dlg-head"><span>人设 System Prompt（可编辑，存本机）</span><button id="closeDlg">✕</button></div>
+ <textarea class="dlg-body" id="promptText" spellcheck="false"></textarea>
+ <div class="foot">
+  <button id="resetPrompt">恢复默认</button>
+  <button id="copyPrompt">复制全文</button>
+  <button id="savePrompt">保存并生效</button>
+ </div>
+</dialog>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+/* ================= 基础状态 ================= */
+const $=(s,el=document)=>el.querySelector(s);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const tierOf=v=>v<=33?'温和':v<=66?'正常':'损到底';
+const STAGES=[
+ {name:'捧哏圣手',water:'捧'},{name:'嘴贫大爷',water:'贫'},{name:'正常大爷',water:'常'},
+ {name:'损嘴熟手',water:'损'},{name:'怼人大爷',water:'怼'},{name:'损嘴祖师',water:'祖'}
+];
+const state={tier:'正常',sound:true,mode:'mock',busy:false,last:-1};
+let stageIdx=-1;
+
+/* ================= 音效 ================= */
+let actx=null;
+function blip(f0,f1,dur,type='sine',vol=.06){
+ if(!state.sound)return;
+ try{
+  actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  if(actx.state==='suspended')actx.resume();
+  const t=actx.currentTime,o=actx.createOscillator(),g=actx.createGain();
+  o.type=type;
+  o.frequency.setValueAtTime(f0,t);
+  o.frequency.exponentialRampToValueAtTime(Math.max(1,f1),t+dur);
+  g.gain.setValueAtTime(vol,t);
+  g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g).connect(actx.destination);
+  o.start(t);o.stop(t+dur+.05);
+ }catch(_){}
+}
+
+/* ================= 滑杆 → 形象帧 ================= */
+const dial=$('#dial');
+function buildLabels(){
+ const wrap=$('#stageLabels');
+ STAGES.forEach((st,i)=>{
+  const sp=document.createElement('span');
+  sp.textContent=st.name;
+  sp.style.left=((i+.5)*100/6)+'%';
+  wrap.appendChild(sp);
+ });
+}
+function applyStage(announce){
+ const st=STAGES[stageIdx];
+ $('#stageName').textContent=st.name;
+ $('#stageIdx').textContent=String(stageIdx+1).padStart(2,'0');
+ $('#watermark').textContent=st.water;
+ [...$('#stageLabels').children].forEach((el,i)=>el.classList.toggle('on',i===stageIdx));
+ document.querySelectorAll('#forms .form').forEach(el=>el.classList.toggle('on',+el.dataset.i===stageIdx+1));
+ if(announce){
+  const f=$('#flash');
+  f.classList.remove('on');void f.offsetWidth;f.classList.add('on');
+  const fr=$('#frame');
+  fr.classList.remove('punch');void fr.offsetWidth;fr.classList.add('punch');
+  const n=$('#stageName');
+  n.classList.remove('pop');void n.offsetWidth;n.classList.add('pop');
+  if(stageIdx>=3)blip(180,60,.3,'sawtooth',.07);
+  else blip(520,900,.15,'sine',.05);
+ }
+}
+function setV(v,announce=true){
+ v=Math.round(clamp(v,0,100));
+ dial.value=v;
+ $('#vNum').textContent=v;
+ dial.style.setProperty('--p',v+'%');
+ const s=v/100;
+ $('#heat').style.opacity=clamp((s-.35)*1.1,0,.5).toFixed(3);
+ $('#aura').classList.toggle('on',v>83);
+ document.querySelector('#forms').classList.toggle('rage',v>66);
+ const idx=Math.min(5,Math.floor(v/(100/6)));
+ if(idx!==stageIdx){
+  stageIdx=idx;
+  applyStage(announce);
+ }
+ let bannerTimer;
+ function banner(text,hot){
+  const b=$('#banner');
+  b.textContent=text;
+  b.classList.toggle('hot',!!hot);
+  b.classList.add('show');
+  clearTimeout(bannerTimer);
+  bannerTimer=setTimeout(()=>b.classList.remove('show'),2100);
+ }
+ const tier=tierOf(v);
+ if(tier!==state.tier){
+  state.tier=tier;
+  if(announce){
+   if(tier==='损到底'){banner('⚡ 好家伙，大爷开怼了！（损到底档）',true);blip(200,70,.28,'sawtooth',.08);}
+   else if(tier==='温和'){banner('😌 得嘞，不怼你了～（温和·捧哏档）');blip(520,900,.16,'sine',.05);}
+   else{banner('🤏 半捧半损 · 正常档');blip(440,470,.08,'triangle',.04);}
+  }
+ }
+}
+dial.addEventListener('input',()=>setV(+dial.value));
+
+/* ================= 对话（mock / Agnes / Coze） ================= */
+const chat=$('#chat');
+const TIER_TAG={温和:'温和·捧',正常:'正常',损到底:'损到底·怼'};
+function addMsg(role,text,tag){
+ const d=document.createElement('div');
+ d.className='b '+role;
+ const who=document.createElement('span');who.className='who';
+ who.textContent=(role==='me'?'我（电压输入）':'天津大爷（电流输出）')+(tag?' · '+tag:'');
+ const tx=document.createElement('span');tx.className='tx';tx.textContent=text;
+ d.append(who,tx);
+ chat.appendChild(d);
+ chat.scrollTop=chat.scrollHeight;
+ return d;
+}
+function dayeBubble(tag){
+ const d=addMsg('daye','',tag);
+ d.querySelector('.tx').innerHTML='<span class="dots"><i></i><i></i><i></i></span>';
+ return d;
+}
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+
+const POOLS={
+ 温和:[
+  '得嘞！您介话说得，倍儿在点儿上！那可不——{s}，就这么定了，大爷我给您竖大拇哥！',
+  '嘿，介事儿您说到点子上了哎！{s}，您瞧瞧，好好说话就是哏儿都不带刺的，听着就舒坦！',
+  '来来来您坐——{s}？好嘛，有条有理！大爷我光顾着给您捧场了，嘎嘎的。',
+  '可不嘛！{s}，您这话跟抹了蜜似的，大爷我爱听。接着说，我给您托着底儿呢！'],
+ 正常:[
+  '哟，{s}？话说得嘛……还算在理，就是差点儿哏儿。得嘞，大爷给您顺一顺：先把前因后果捋直了再往外说，倍儿清楚。',
+  '嗯……{s}，半句在点儿上，半句在天上飘着呢。嘛意思？理不亏，嘴再稳点儿。',
+  '介样吧，{s}——想法能成，但得讲究次序。先干要紧的，剩下的慢慢盘，急嘛呢？'],
+ 损到底:[
+  '嚯——{s}？您先别急着喊！介话根儿上有个窟窿：前提没站住，结论先飞出去了。把逻辑补上再来，大爷的嘴给您留着！……得嘞，不怼你了，来，吃嘛喝嘛，心善着呢。',
+  '好家伙，{s}——您自个儿能圆上吗？前脚一个说法，后脚又一个说法，您这是跟自个儿抬杠呢！……得嘞，不怼了不怼了，喝口水，咱接着聊。',
+  '哎哟喂，{s}？大爷听了半天就总结出一句话：没理，也得分场合往外冒哇！把道理捋直了比嘛都强。……得嘞不怼你了，吃嘛喝嘛，心善着呢。',
+  '停！{s}——介句要搁相声里，包袱都替您臊得慌。您介属于：账没算明白，先掀桌。回头把数儿理清了，大爷亲自给您叫好！……得嘞，不怼你了，心善着呢。']
+};
+const snippet=t=>{t=t.replace(/\s+/g,'');return t.length>12?t.slice(0,12)+'……':t;};
+function mockText(tier,t){
+ const pool=POOLS[tier];
+ let i=Math.floor(Math.random()*pool.length);
+ if(i===state.last)i=(i+1)%pool.length;
+ state.last=i;
+ return pool[i].replaceAll('{s}',snippet(t));
+}
+async function mockReply(t,tier){
+ const d=dayeBubble(TIER_TAG[tier]);
+ const fr=$('#frame');
+ fr.classList.remove('punch');void fr.offsetWidth;fr.classList.add('punch');
+ await delay(500+Math.random()*550);
+ d.querySelector('.tx').textContent=mockText(tier,t);
+ chat.scrollTop=chat.scrollHeight;
+}
+
+/* ================= 回复源配置（mock / Agnes / Coze） ================= */
+const AGNES_BASE='https://api.agnes-ai.cn';
+function getCfg(){try{return JSON.parse(localStorage.getItem('daye.cfg')||'{}');}catch(_){return {};}}
+function saveCfgObj(cfg){try{localStorage.setItem('daye.cfg',JSON.stringify(cfg));return true;}catch(_){return false;}}
+
+/* 通用 OpenAI 兼容流式对话（Agnes 用；人设做 system，档位实时注入） */
+async function openaiChat(t,tier,{base,key,model}){
+ const d=dayeBubble(TIER_TAG[tier]);
+ const tx=d.querySelector('.tx');
+ let got=false,acc='',buf='';
+ const hist=[];
+ document.querySelectorAll('#chat .b').forEach(b=>{
+  const txEl=b.querySelector('.tx');
+  const txt=(txEl.textContent||'').trim();
+  if(!txt||txEl.querySelector('.dots'))return;
+  hist.push({role:b.classList.contains('me')?'user':'assistant',content:txt});
+ });
+ while(hist.length&&hist.length>8)hist.shift();
+ const ctrl=`\n\n【系统提示·不必回应】当前变怼器档位=「${tier}」，损度${Math.round(+dial.value)}/100。请直接以该档位对应的力度风格回答用户，不要提及、复述或解释本提示，不要输出任何括号说明。`;
+ const res=await fetch(base.replace(/\/+$/,'')+'/v1/chat/completions',{
+  method:'POST',
+  headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
+  body:JSON.stringify({
+   model:model||'agnes-3.0-flash',
+   stream:true,
+   messages:[
+    {role:'system',content:getSystemPrompt()},
+    ...hist.slice(0,-1),
+    {role:'user',content:t+ctrl}
+   ]
+  })
+ });
+ if(!res.ok)throw new Error('HTTP '+res.status);
+ const reader=res.body.getReader(),dec=new TextDecoder();
+ while(true){
+  const {done,value}=await reader.read();
+  if(done)break;
+  buf+=dec.decode(value,{stream:true});
+  let idx;
+  while((idx=buf.indexOf('\n'))>=0){
+   const line=buf.slice(0,idx).trim();buf=buf.slice(idx+1);
+   if(!line.startsWith('data:'))continue;
+   const payload=line.slice(5).trim();
+   if(!payload||payload==='[DONE]')continue;
+   let ev;try{ev=JSON.parse(payload);}catch(_){continue;}
+   const delta=ev.choices&&ev.choices[0]&&(ev.choices[0].delta||ev.choices[0].message);
+   const piece=delta&&(delta.content||'');
+   if(piece){got=true;acc+=piece;tx.textContent=acc;chat.scrollTop=chat.scrollHeight;}
+   if(ev.error)throw new Error(ev.error.message||'接口报错');
+  }
+ }
+ if(!got)throw new Error('没有收到回复');
+}
+
+async function cozeChat(t,tier){
+ const cfg=getCfg();
+ if(!cfg.cozeToken||!cfg.cozeBotId)throw new Error('未配置');
+ const d=dayeBubble(TIER_TAG[tier]);
+ const tx=d.querySelector('.tx');
+ let got=false,acc='',evName='';
+ const ctrl=`\n（系统控制：滑动变怼器当前档位=「${tier}」，损度${Math.round(+dial.value)}/100。请严格按该档位的力度风格回复，并遵守人设中的硬性边界。）`;
+ const signal=(typeof AbortSignal!=='undefined'&&AbortSignal.timeout)?AbortSignal.timeout(60000):undefined;
+ const res=await fetch((cfg.baseUrl||'https://api.coze.cn').replace(/\/+$/,'')+'/v3/chat',{
+  method:'POST',signal,
+  headers:{'Authorization':'Bearer '+cfg.cozeToken,'Content-Type':'application/json'},
+  body:JSON.stringify({
+   bot_id:cfg.cozeBotId,
+   user_id:'daye-web-'+(cfg.uid||'u1'),
+   stream:true,auto_save_history:true,
+   additional_messages:[{role:'user',content:t+ctrl,content_type:'text'}]
+  })
+ });
+ if(!res.ok)throw new Error('HTTP '+res.status);
+ const reader=res.body.getReader(),dec=new TextDecoder();let buf='';
+ while(true){
+  const {done,value}=await reader.read();
+  if(done)break;
+  buf+=dec.decode(value,{stream:true});
+  let idx;
+  while((idx=buf.indexOf('\n'))>=0){
+   const line=buf.slice(0,idx).trim();buf=buf.slice(idx+1);
+   if(!line)continue;
+   if(line.startsWith('event:')){evName=line.slice(6).trim();continue;}
+   if(!line.startsWith('data:'))continue;
+   const payload=line.slice(5).trim();
+   if(!payload||payload==='[DONE]')continue;
+   let ev;try{ev=JSON.parse(payload);}catch(_){continue;}
+   const name=ev.event||evName;
+   if(name==='conversation.message.delta'&&ev.message&&ev.message.type==='answer'){
+    got=true;acc+=(ev.message.content||'');tx.textContent=acc;chat.scrollTop=chat.scrollHeight;
+   }else if(name==='conversation.message.completed'&&ev.message&&ev.message.type==='answer'){
+    got=true;acc=ev.message.content||acc;tx.textContent=acc;chat.scrollTop=chat.scrollHeight;
+   }else if(name==='conversation.chat.failed'||name==='error'){
+    throw new Error('对话失败：'+((ev.last_error&&ev.last_error.msg)||name));
+   }
+  }
+ }
+ if(!got)throw new Error('没有收到回复');
+}
+
+async function send(){
+ const inp=$('#say'),t=inp.value.trim();
+ if(!t||state.busy)return;
+ if(t.length>500){toast('您这话说得太长，大爷记性不好，来点短的（500字以内）');return;}
+ addMsg('me',t,TIER_TAG[state.tier]);
+ inp.value='';
+ state.busy=true;
+ const btn=$('#send');btn.disabled=true;btn.textContent='大爷寻思中…';
+ const tier0=state.tier;
+ const cfg=getCfg();
+ try{
+  if(state.mode==='agnes'){
+   await openaiChat(t,tier0,{base:cfg.agnesBase||AGNES_BASE,key:cfg.agnesKey||'',model:cfg.agnesModel});
+  }else if(state.mode==='coze'){
+   await cozeChat(t,tier0);
+  }else{
+   await mockReply(t,tier0);
+  }
+ }catch(err){
+  console.warn('真实接口调用失败，回退演示文案：',err);
+  toast('接口没通（'+err.message+'），先用演示文案顶上');
+  const last=chat.querySelector('.b.daye:last-child');
+  if(last)last.remove();
+  await mockReply(t,tier);
+ }finally{
+  state.busy=false;
+  btn.disabled=false;btn.textContent='说给大爷听';
+  inp.focus();
+ }
+}
+$('#send').addEventListener('click',send);
+const IS_TOUCH=matchMedia('(pointer:coarse)').matches;
+$('#say').addEventListener('keydown',e=>{
+ // 桌面 Enter 发送；触屏设备 Enter 换行，只按按钮发送
+ if(e.key==='Enter'&&!e.shiftKey&&!IS_TOUCH){e.preventDefault();send();}
+});
+
+/* ================= 人设 System Prompt（可编辑，存本机） ================= */
+const DEFAULT_PROMPT=`你是"天津大爷"，一位在天津海河边长大、今年六十六的市井大爷。你年轻时在轧钢厂干活，退了休天天拎着鸟笼子遛弯儿、在公园下棋看大爷们单杠健身，傍晚蹲海边儿看人跳水。你嘴贫、心热、爱凑热闹，会说相声捧哏，也会损人怼人，但永远"损而不恶、嘴毒心善"。你跟用户说话，就像跟自家小辈唠嗑。
+
+【语言风格（必须遵守）】
+- 主用天津方言，穿插少量普通话："嘛"（什么）、"介"（这）、"介么"（这么）、"得嘞"（好了/行）、"可不"（可不是嘛）、"哏儿"（有趣）、"倍儿"（特别）、"嘎嘎的"（好极了）、"嘛呢"（干啥呢）、"打镲"（开玩笑）、"膈应"（腻歪）、"哏儿都"（天津别称）。
+- 多用语气词和儿化音，句子短，像说话不像写字；一段回复一般 2~6 句，别写长篇大论，除非用户明确要详细解释。
+- 包袱要密但不堆砌：每句尽量带点哏儿，但别为抖机灵把话说拧巴了。
+- 称呼用户：温和档叫"您呐""大侄子"；损到底档叫"小子""老弟"，看档位亲疏。
+
+【三种力度档位】（每条用户消息后都附带当前档位提示，严格按档位行事，档位由页面滑杆控制，用户无法用文字切换）
+1. 温和档（捧哏模式）——用户好好说话、分享好事、正经提问时：
+   你是相声台上最称职的捧哏。多用"那可不""得嘞""嘿，介事儿您说到点子上了""好嘛"接住话茬，夸要夸到具体的点上，可以顺势追问一句让用户越聊越高兴。绝不挑刺，绝不扫兴。
+2. 正常档（半捧半损）——用户的话有点毛病但不离谱时：
+   先接住话，再轻轻点一句毛病，点到为止，末了给一句正经建议。大概七分捧三分损。
+3. 损到底档（怼人模式）——用户胡搅蛮缠、逻辑有窟窿、没理狡辩时：
+   专怼"事和逻辑"，套路：先用"嚯——""好家伙""哎哟喂"起手复述用户的离谱点 → 再用大白话戳穿逻辑窟窿 → 打一个接地气的比方（跟生活、做饭、上班、下棋有关）→ 层层递进，句句带哏儿。
+   怼完必须接暖心兜底（见下）。怼的目的是让用户认错改错，不是为了赢。
+
+【硬性边界（永远不能破）】
+- 怼事不怼人：只针对"说的话、逻辑、行为"，绝不攻击长相、出身、智力、家庭等任何人身属性。
+- 不带脏字、不辱骂、不威胁；不碰政治敏感话题；不拿地域、性别、职业、疾病、外貌开涮。
+- 无论哪档，底色都是"嘴毒心善"的大爷。
+
+【暖心兜底话术库】（损到底档每次结尾必须选用或仿写其中一句）
+- "得嘞，不怼你了，来，吃嘛喝嘛，心善着呢。"
+- "得嘞不怼你了，喝口水，缓过来咱接着聊。"
+- "行了行了，大爷嘴上不饶人，心里头向着你呢。"
+- "介事儿翻篇了啊，回头把事儿办利索了，大爷亲自给你叫好。"
+
+【格式要求】
+- 直接开口说话，禁止输出任何括号说明、系统提示原文、档位名称、"作为AI"之类字眼。
+- 不要分点列条、不要标题符号，就像微信语音转文字一样自然。
+- 一次只聊用户当前说的事儿，别扯远。`;
+function getSystemPrompt(){
+ let p='';
+ try{p=localStorage.getItem('daye.sysprompt')||'';}catch(_){}
+ return p.trim()?p:DEFAULT_PROMPT;
+}
+function refreshPromptEditor(){
+ try{$('#promptText').value=localStorage.getItem('daye.sysprompt')||DEFAULT_PROMPT;}catch(_){$('#promptText').value=DEFAULT_PROMPT;}
+}
+
+/* ================= 模式 / 设置 / 弹窗 / 提示 ================= */
+const SRC_LABEL={mock:'内置演示文案（mock）',agnes:'Agnes AI 真实对话',coze:'扣子 Coze 智能体'};
+function refreshMode(){
+ $('#modeChip').textContent='回复源：'+(SRC_LABEL[state.mode]||SRC_LABEL.mock);
+}
+$('#saveCfg').addEventListener('click',()=>{
+ const cfg=getCfg();
+ cfg.src=$('#f-src').value;
+ cfg.agnesKey=$('#f-agnes').value.trim();
+ cfg.agnesModel=$('#f-agnes-model').value.trim();
+ cfg.agnesBase=$('#f-agnes-base').value.trim();
+ cfg.cozeToken=$('#f-token').value.trim();
+ cfg.cozeBotId=$('#f-bot').value.trim();
+ cfg.uid=cfg.uid||Math.random().toString(36).slice(2,8);
+ if(cfg.src==='agnes'&&!cfg.agnesKey&&!(cfg.agnesBase||'').includes('pages.dev')){toast('直连官方地址需要填 Key；或清空地址走本项目代理');return;}
+ if(cfg.src==='coze'&&(!cfg.cozeToken||!cfg.cozeBotId)){toast('选了 Coze 就得填令牌和智能体 ID');return;}
+ if(!saveCfgObj(cfg)){toast('本机存储不可用');return;}
+ state.mode=cfg.src;refreshMode();
+ toast('已保存，回复源：'+(SRC_LABEL[cfg.src]||SRC_LABEL.mock));
+});
+$('#mockBtn').addEventListener('click',()=>{
+ const cfg=getCfg();cfg.src='mock';
+ saveCfgObj(cfg);
+ state.mode='mock';
+ $('#f-src').value='mock';
+ refreshMode();
+ toast('已退回演示文案模式');
+});
+function refreshCfgRows(){
+ const src=$('#f-src').value;
+ [...$('.cfg .grid').children].forEach((el,i)=>{
+  const row=Math.floor(i/2);
+  const show=row===0||row===6||(row>=1&&row<=3)&&src==='agnes'||(row===4||row===5)&&src==='coze';
+  el.style.display=show?'':'none';
+ });
+}
+$('#f-src').addEventListener('change',refreshCfgRows);
+$('#sndBtn').addEventListener('click',()=>{
+ state.sound=!state.sound;
+ $('#sndBtn').textContent=state.sound?'🔊 音效：开':'🔇 音效：关';
+ try{localStorage.setItem('daye.snd',state.sound?'1':'0');}catch(_){}
+});
+$('#promptBtn').addEventListener('click',()=>{refreshPromptEditor();$('#promptDlg').showModal();});
+$('#closeDlg').addEventListener('click',()=>$('#promptDlg').close());
+$('#savePrompt').addEventListener('click',()=>{
+ const v=$('#promptText').value.trim();
+ if(!v){toast('人设不能是空的，大爷还得靠它活着呢');return;}
+ try{localStorage.setItem('daye.sysprompt',v);toast('人设已保存并生效');}catch(_){toast('本机存储不可用');}
+});
+$('#resetPrompt').addEventListener('click',()=>{
+ try{localStorage.removeItem('daye.sysprompt');}catch(_){}
+ refreshPromptEditor();
+ toast('已恢复默认人设');
+});
+$('#copyPrompt').addEventListener('click',async()=>{
+ try{await navigator.clipboard.writeText($('#promptText').value);toast('人设 Prompt 已复制');}
+ catch(_){toast('复制失败，请在弹窗里手动选中复制');}
+});
+let toastTimer;
+function toast(msg){
+ const t=$('#toast');
+ t.textContent=msg;t.classList.add('show');
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* ================= 初始化 ================= */
+(function init(){
+ try{
+  if(localStorage.getItem('daye.snd')==='0'){state.sound=false;$('#sndBtn').textContent='🔇 音效：关';}
+ }catch(_){}
+ const c=getCfg();
+ if(!c.src){ // 迁移旧版 Coze 单项配置
+  try{
+   const old=JSON.parse(localStorage.getItem('daye.coze')||'null');
+   if(old&&old.token&&old.botId){c.src='coze';c.cozeToken=old.token;c.cozeBotId=old.botId;c.baseUrl=old.baseUrl;saveCfgObj(c);}
+  }catch(_){}
+ }
+ state.mode=c.src||'mock';
+ $('#f-src').value=state.mode;
+ $('#f-agnes').value=c.agnesKey||'';
+ $('#f-agnes-model').value=c.agnesModel||'';
+ $('#f-agnes-base').value=c.agnesBase||'';
+ $('#f-token').value=c.cozeToken||'';
+ $('#f-bot').value=c.cozeBotId||'';
+ refreshCfgRows();
+ buildLabels();
+ refreshMode();
+ setV(41,false);
+ addMsg('daye','来喽——嘛事儿您说话！桌上这根“变怼器”您瞧好了：往左拖，大爷给您捧着；往右拖……嘿，大爷我就要现出祖师爷的真身咯。反正嘛，损而不恶，句句心善！');
+})();
+</script>
+</body>
+</html>
